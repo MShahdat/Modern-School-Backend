@@ -1,0 +1,44 @@
+model Teacher {
+  id String @id @default(uuid())
+
+  teacherId      String              @unique
+  name           String
+  email          String              @unique
+  designation    TeacherDesignation?
+  joiningDate    DateTime?
+  employmentType EmploymentType      @default(FULL_TIME)
+  salary         Decimal?            @db.Decimal(10, 2)
+
+  highestDegree   String? // "M.Sc", "Ph.D"
+  specialization  String?
+  experienceYears Int?    @default(0)
+
+  dateOfBirth DateTime?
+  gender      Gender?
+  bloodGroup  String?
+  religion    String?
+  nationality String?   @default("Bangladeshi")
+  phone       String?
+
+  presentAddress   String?
+  permanentAddress String?
+
+  bankName    String?
+  bankAccount String?
+
+  startingDate DateTime?
+  endingDate   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId       String      @unique
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  departmentId String?
+  department   Department? @relation(fields: [departmentId], references: [id])
+
+  siteConfigId String
+  siteConfig   SiteConfig @relation(fields: [siteConfigId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("teachers")
+}

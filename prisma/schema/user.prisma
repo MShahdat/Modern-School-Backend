@@ -1,0 +1,30 @@
+model User {
+  id String @id @default(uuid())
+
+  name               String
+  email              String       @unique
+  password           String
+  profileImage       String?
+  imagePublicId      String?
+  googleId           String?
+  authProvider       AuthProvider @default(CREADENTIAL)
+  emailVerified      Boolean      @default(false)
+  role               Role         @default(STUDENT)
+  status             UserStatus   @default(ACTIVE)
+  needPasswordChange Boolean      @default(false)
+  isDeleted          Boolean      @default(false)
+  deletedAt          DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  siteConfigId String
+  siteConfig   SiteConfig @relation(fields: [siteConfigId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  student   Student?
+  teacher   Teacher?
+  staff     Staff?
+  committee Committee?
+
+  @@map("users")
+}

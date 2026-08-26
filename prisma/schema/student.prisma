@@ -1,0 +1,44 @@
+model Student {
+  id String @id @default(uuid())
+
+  studentId String @unique
+  name      String
+  email     String @unique
+
+  admissionDate DateTime?
+  academicYear  String?
+  class         String?
+  section       String?
+  role          Int?
+  group         Group?
+  shift         Shift?
+
+  dateOfBirth DateTime?
+  gender      Gender?
+  bloodGroup  String?
+  religion    String?
+  nationality String    @default("Bangladeshi")
+  phone       String?
+
+  presentAddress   String?
+  permanentAddress String?
+
+  fatherName       String?
+  fatherPhone      String?
+  motherName       String?
+  motherPhone      String?
+  guardianName     String?
+  guardianRelation String?
+  guardianPhone    String?
+  emergencyContact String?
+
+  previousSchool String?
+
+  createdAt DateTime @default(now())
+  udpatedAt DateTime @updatedAt
+
+  userId       String     @unique
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  siteConfigId String
+  siteConfig   SiteConfig @relation(fields: [siteConfigId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}

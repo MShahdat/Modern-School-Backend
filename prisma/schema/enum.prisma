@@ -1,0 +1,63 @@
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  TEACHER
+  STUDENT
+  COMMITTEE
+  STAFF
+}
+
+enum AuthProvider {
+  CREADENTIAL
+  GOOGLE
+  FACEBOOK
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+  DELETED
+}
+
+enum Shift {
+  DAY
+  MORNING
+  NIGHT
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum Group {
+  SCIENCE
+  COMMERCE
+  ARTS
+}
+
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+}
+
+enum TeacherDesignation {
+  HEADMASTER
+  ASSISTANT_HEADMASTER
+  TEACHER
+  ASSISTANT_TEACHER
+}
+
+enum StaffDesignation {
+  ACCOUNTANT
+  OFFICE_ASSISTANT
+  CLEANER
+  NIGHT_GUARD
+  AYAH
+}
+
+enum CommitteeDesignation {
+  CHAIRMAN
+  MAMBER
+}

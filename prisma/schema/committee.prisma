@@ -1,0 +1,34 @@
+model Committee {
+  id String @id @default(uuid())
+
+  committeeId String @unique
+  name        String
+  email       String @unique
+
+  designation CommitteeDesignation @default(MAMBER)
+
+  fatherName String?
+  motherName String?
+  nationalId String?
+  bio        String?
+  phone      String?
+
+  qualification String?
+  experience    String?
+
+  presentAddress   String?
+  permanentAddress String?
+
+  startingDate DateTime?
+  endingDate   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId       String     @unique
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  siteConfigId String
+  siteConfig   SiteConfig @relation(fields: [siteConfigId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("committees")
+}

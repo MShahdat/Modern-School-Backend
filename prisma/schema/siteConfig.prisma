@@ -1,0 +1,31 @@
+model SiteConfig {
+  id String @id @default(uuid())
+
+  email      String  @unique
+  schoolName String  @unique
+  logo       String
+  address    String
+  eiin       String  @unique
+  estdYear   String
+  isActive   Boolean @default(true)
+
+  facebookUrl  String?
+  youtubeUrl   String?
+  linkdinUrl   String?
+  twitterUrl   String?
+  instagramUrl String?
+
+  theme     Json?
+  darkTheme Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user       User[]
+  teacher    Teacher[]
+  student    Student[]
+  staffs     Staff[]
+  committees Committee[]
+
+  @@map("siteConfigs")
+}

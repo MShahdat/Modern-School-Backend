@@ -1,0 +1,34 @@
+model Staff {
+  id String @id @default(uuid())
+
+  staff_id String @unique
+  name     String
+  email    String @unique
+
+  fatherName String?
+  motherName String?
+  nationalId String?
+  phone      String?
+  bio        String?
+
+  designation   StaffDesignation?
+  qualification String?
+  experience    String?
+  interest      String?
+
+  startingDate DateTime?
+  endingDate   DateTime?
+
+  presentAddress   String?
+  permanemtAddress String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId       String     @unique
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  siteConfigId String
+  siteConfig   SiteConfig @relation(fields: [siteConfigId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("staffs")
+}
