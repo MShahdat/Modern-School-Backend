@@ -4,6 +4,7 @@ import cors from 'cors'
 import cookieParser from "cookie-parser"
 import { globalErrorHandler } from "./app/middleware/globalErrorHandler"
 import { notFound } from "./app/middleware/notFound"
+import { AuthRoutes } from "./app/module/auth/auth.route"
 
 const app: Application = express()
 
@@ -29,6 +30,8 @@ app.get('/', async (req: Request, res: Response) => {
   })
 })
 
+
+app.use('/api/v1/:siteConfigId/auth', AuthRoutes)
 
 app.use(globalErrorHandler)
 app.use(notFound)
