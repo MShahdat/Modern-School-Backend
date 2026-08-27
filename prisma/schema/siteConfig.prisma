@@ -1,13 +1,14 @@
 model SiteConfig {
   id String @id @default(uuid())
 
-  email      String  @unique
-  schoolName String? @unique
-  logo       String?
-  address    String?
-  eiin       String? @unique
-  estdYear   String?
-  isActive   Boolean @default(true)
+  email        String  @unique
+  schoolName   String? @unique
+  logo         String?
+  logoPublicId String?
+  address      String?
+  eiin         String? @unique
+  estdYear     String?
+  isActive     Boolean @default(true)
 
   facebookUrl  String?
   youtubeUrl   String?

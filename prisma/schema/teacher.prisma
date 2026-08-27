@@ -8,6 +8,7 @@ model Teacher {
   joiningDate    DateTime?
   employmentType EmploymentType      @default(FULL_TIME)
   salary         Decimal?            @db.Decimal(10, 2)
+  status UserStatus @default(ACTIVE)
 
   highestDegree   String? // "M.Sc", "Ph.D"
   specialization  String?

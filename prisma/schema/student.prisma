@@ -1,9 +1,10 @@
 model Student {
   id String @id @default(uuid())
 
-  studentId String @unique
+  studentId String     @unique
   name      String
-  email     String @unique
+  email     String     @unique
+  status    UserStatus @default(ACTIVE)
 
   admissionDate DateTime?
   academicYear  String?

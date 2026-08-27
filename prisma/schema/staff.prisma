@@ -1,9 +1,10 @@
 model Staff {
   id String @id @default(uuid())
 
-  staff_id String @unique
+  staff_id String     @unique
   name     String
-  email    String @unique
+  email    String     @unique
+  status   UserStatus @default(ACTIVE)
 
   fatherName String?
   motherName String?

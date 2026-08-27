@@ -14,7 +14,7 @@ import { IRequestUser } from '../../middleware/checkAuth'
 
 //& LOGIN USER
 const loginUser = async (payload: ILogin, siteConfigId: string) => {
-  const { id, password } = payload
+  const { email, password } = payload
 
   const isConfig = await prisma.siteConfig.findUnique({
     where: { id: siteConfigId }
@@ -25,7 +25,7 @@ const loginUser = async (payload: ILogin, siteConfigId: string) => {
   }
 
   const user = await prisma.user.findUnique({
-    where: { id },
+    where: { email },
   })
 
   if (!user) {

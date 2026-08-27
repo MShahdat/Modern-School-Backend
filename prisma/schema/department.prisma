@@ -4,6 +4,7 @@ model Department {
   name        String
   icon        String?
   description String?
+  isActive    Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -5,6 +5,10 @@ import cookieParser from "cookie-parser"
 import { globalErrorHandler } from "./app/middleware/globalErrorHandler"
 import { notFound } from "./app/middleware/notFound"
 import { AuthRoutes } from "./app/module/auth/auth.route"
+import { teacherRouter } from "./app/module/teacher/teacher.route"
+import { siteConfigRouter } from "./app/module/siteConfig/siteConfig.route"
+import { auth } from "./app/middleware/checkAuth"
+import { Role } from "../generated/prisma/enums"
 
 const app: Application = express()
 
@@ -32,6 +36,14 @@ app.get('/', async (req: Request, res: Response) => {
 
 
 app.use('/api/v1/:siteConfigId/auth', AuthRoutes)
+
+app.use('/api/v1/siteConfig',
+  auth(Role.SUPER_ADMIN),
+  siteConfigRouter)
+
+app.use('/api/v1/:siteConfigId/teacher', teacherRouter)
+
+
 
 app.use(globalErrorHandler)
 app.use(notFound)

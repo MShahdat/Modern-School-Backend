@@ -1,9 +1,10 @@
 model Committee {
   id String @id @default(uuid())
 
-  committeeId String @unique
+  committeeId String     @unique
   name        String
-  email       String @unique
+  email       String     @unique
+  status      UserStatus @default(ACTIVE)
 
   designation CommitteeDesignation @default(MAMBER)
 

@@ -1,5 +1,6 @@
 import { Response } from "express";
 
+
 type TMeta = {
   page: number;
   limit: number;
@@ -23,4 +24,15 @@ export const sendResponse = <T>(res: Response, data: TResponseData<T>) => {
     data: data.data,
     meta: data.meta
   })
+}
+
+export const successResponse = <T>(res: Response, statusCode: number, message?: string, data?: T, meta?: TMeta) => {
+  const response = {
+    success: true,
+    statusCode,
+    message: message || "Request completed successfully",
+    data,
+    meta
+  }
+  res.status(statusCode).json(response)
 }
