@@ -5,15 +5,20 @@ model Teacher {
   name           String
   email          String              @unique
   designation    TeacherDesignation?
-  joiningDate    DateTime?
+  joiningDate    DateTime
+  endingDate     DateTime?
   employmentType EmploymentType      @default(FULL_TIME)
   salary         Decimal?            @db.Decimal(10, 2)
-  status UserStatus @default(ACTIVE)
+  status         UserStatus          @default(ACTIVE)
 
+  department      Group   @default(NONE)
+  subject         Json[]
   highestDegree   String? // "M.Sc", "Ph.D"
   specialization  String?
   experienceYears Int?    @default(0)
 
+  fatherName  String?
+  motherName  String?
   dateOfBirth DateTime?
   gender      Gender?
   bloodGroup  String?
@@ -21,23 +26,17 @@ model Teacher {
   nationality String?   @default("Bangladeshi")
   phone       String?
 
-  presentAddress   String?
-  permanentAddress String?
+  presentAddress   Json?
+  permanentAddress Json?
 
   bankName    String?
   bankAccount String?
 
-  startingDate DateTime?
-  endingDate   DateTime?
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId       String      @unique
-  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  departmentId String?
-  department   Department? @relation(fields: [departmentId], references: [id])
-
+  userId       String     @unique
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   siteConfigId String
   siteConfig   SiteConfig @relation(fields: [siteConfigId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 

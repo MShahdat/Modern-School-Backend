@@ -1,8 +1,7 @@
 import { Router } from "express";
-import { teacherController } from "./teacher.controller";
+import { committeeController } from "./committee.controller";
 import { auth } from "../../middleware/checkAuth";
 import { Role } from "../../../../generated/prisma/enums";
-
 
 
 const route = Router({ mergeParams: true })
@@ -10,33 +9,31 @@ const route = Router({ mergeParams: true })
 
 route.post('/',
   auth(Role.SUPER_ADMIN, Role.ADMIN),
-  teacherController.createTeacher)
+  committeeController.createCommittee)
 
 route.get(
   '/',
-  teacherController.getTeachers)
+  committeeController.getCommittee)
 
 route.get(
-  '/all-teachers',
+  '/all-committee',
   auth(Role.ADMIN, Role.SUPER_ADMIN),
-  teacherController.getAllTeacher)
+  committeeController.getAllCommittee)
 
 route.get(
   '/:id',
-  teacherController.getSingleTeacher)
+  committeeController.getSingleCommittee)
 
 route.patch(
   '/:id',
   auth(Role.ADMIN, Role.SUPER_ADMIN),
-  teacherController.deleteTeacher)
+  committeeController.deleteCommittee)
 
 
 route.put(
   '/:id',
   auth(Role.ADMIN, Role.SUPER_ADMIN),
-  teacherController.updatedTeacher)
+  committeeController.updatedCommittee)
 
 
-
-
-export const teacherRouter = route
+export const committeeRouter = route

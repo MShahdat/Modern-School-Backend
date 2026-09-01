@@ -8,6 +8,7 @@ model Committee {
 
   designation CommitteeDesignation @default(MAMBER)
 
+  message    String?
   fatherName String?
   motherName String?
   nationalId String?
@@ -17,8 +18,8 @@ model Committee {
   qualification String?
   experience    String?
 
-  presentAddress   String?
-  permanentAddress String?
+  presentAddress   Json?
+  permanentAddress Json?
 
   startingDate DateTime?
   endingDate   DateTime?

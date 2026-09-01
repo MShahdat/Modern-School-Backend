@@ -80,7 +80,6 @@ const loginUser = async (payload: ILogin, siteConfigId: string) => {
 
 
 
-
 //& GET ME
 const getMe = async (user: IRequestUser) => {
   const isUserExists = await prisma.user.findUnique({
@@ -98,7 +97,6 @@ const getMe = async (user: IRequestUser) => {
 
   return isUserExists
 }
-
 
 
 
@@ -152,3 +150,6 @@ export const AuthService = {
   getMe,
   refreshToken
 }
+
+
+

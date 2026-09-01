@@ -15,13 +15,12 @@ model Staff {
   designation   StaffDesignation?
   qualification String?
   experience    String?
-  interest      String?
 
   startingDate DateTime?
   endingDate   DateTime?
 
-  presentAddress   String?
-  permanemtAddress String?
+  presentAddress   Json?
+  permanemtAddress Json?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

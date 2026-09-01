@@ -1,8 +1,7 @@
 import { Router } from "express";
-import { teacherController } from "./teacher.controller";
+import { staffController } from "./staff.controller";
 import { auth } from "../../middleware/checkAuth";
 import { Role } from "../../../../generated/prisma/enums";
-
 
 
 const route = Router({ mergeParams: true })
@@ -10,33 +9,31 @@ const route = Router({ mergeParams: true })
 
 route.post('/',
   auth(Role.SUPER_ADMIN, Role.ADMIN),
-  teacherController.createTeacher)
+  staffController.createStaff)
 
 route.get(
   '/',
-  teacherController.getTeachers)
+  staffController.getStaffs)
 
 route.get(
-  '/all-teachers',
+  '/all-staff',
   auth(Role.ADMIN, Role.SUPER_ADMIN),
-  teacherController.getAllTeacher)
+  staffController.getAllStaff)
 
 route.get(
   '/:id',
-  teacherController.getSingleTeacher)
+  staffController.getSingleStaff)
 
 route.patch(
   '/:id',
   auth(Role.ADMIN, Role.SUPER_ADMIN),
-  teacherController.deleteTeacher)
+  staffController.deleteStaff)
 
 
 route.put(
   '/:id',
   auth(Role.ADMIN, Role.SUPER_ADMIN),
-  teacherController.updatedTeacher)
+  staffController.updatedStaff)
 
 
-
-
-export const teacherRouter = route
+export const staffRouter = route

@@ -4,7 +4,6 @@ import config from '../config/env';
 import { Prisma } from '../../../generated/prisma/client';
 import { AppError } from '../utils/AppError';
 
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const globalErrorHandler = async (
   err: any,

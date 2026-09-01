@@ -1,16 +1,16 @@
 import bcrypt from "bcryptjs"
 import { prisma } from "../../lib/prisma"
 import { IRequestUser } from "../../middleware/checkAuth"
-import { AppError } from "../../utils/AppError"
-import { ITeacherPayload, IUpdateTeacherPayload } from "./teacher.interface"
+import { IStaffPayload, IUpdateStaffPayload } from "./staff.interface"
 import httpStatus from 'http-status'
 import config from "../../config/env"
 import { IQuery } from "../../interface"
-import { TeacherWhereInput } from "../../../../generated/prisma/models"
+import { StaffWhereInput } from "../../../../generated/prisma/models"
+import { AppError } from "../../utils/AppError"
 
-//& CREATE TEACHER
-const createTeacher = async (payload: ITeacherPayload, siteConfigId: string, user: IRequestUser) => {
 
+//& CREATE STAFF
+const createStaff = async (payload: IStaffPayload, siteConfigId: string, user: IRequestUser) => {
   const isConfig = await prisma.siteConfig.findUnique({
     where: {
       id: siteConfigId
@@ -32,7 +32,6 @@ const createTeacher = async (payload: ITeacherPayload, siteConfigId: string, use
   }
 
   const randomPass = Math.random().toString(36).slice(-8)
-  console.log('pass', randomPass)
 
   const hasPass = await bcrypt.hash(randomPass, Number(config.bcrypt_salt_rounds))
 
@@ -42,9 +41,9 @@ const createTeacher = async (payload: ITeacherPayload, siteConfigId: string, use
       email: payload.email,
       name: payload.name,
       password: hasPass,
-      role: "TEACHER",
+      role: "STAFF",
       needPasswordChange: true,
-      teacher: {
+      staff: {
         create: {
           siteConfigId,
           ...payload
@@ -55,7 +54,7 @@ const createTeacher = async (payload: ITeacherPayload, siteConfigId: string, use
       password: true
     },
     include: {
-      teacher: true
+      staff: true
     }
   })
 
@@ -63,10 +62,8 @@ const createTeacher = async (payload: ITeacherPayload, siteConfigId: string, use
 }
 
 
-
-//& GET ALL TEACHERS (ADMIN)
-const getAllTeacher = async (query: IQuery, siteConfigId: string) => {
-
+//& GET ALL STAFFS (ADMIN)
+const getAllStaff = async (query: IQuery, siteConfigId: string) => {
   const sort = query.sortBy ? query.sortBy : "createdAt";
   const order = query.sortOrder ? query.sortOrder : "desc";
   const page = Number(query.page || 1);
@@ -82,12 +79,11 @@ const getAllTeacher = async (query: IQuery, siteConfigId: string) => {
     throw new AppError(httpStatus.NOT_FOUND, 'site config not found')
   }
 
-  const andConditions: TeacherWhereInput[] = [
+  const andConditions: StaffWhereInput[] = [
     {
       siteConfigId
     }
   ];
-
 
   if (query.search) {
     andConditions.push({
@@ -99,57 +95,24 @@ const getAllTeacher = async (query: IQuery, siteConfigId: string) => {
           }
         },
         {
-          bankName: {
+          email: {
             contains: query.search,
             mode: "insensitive"
           }
         },
         {
-          highestDegree: {
+          staff_id: {
             contains: query.search,
             mode: "insensitive"
           }
         }
-
       ]
-    })
-  }
-
-
-  if (query.department) {
-    andConditions.push({
-      department: query.department
     })
   }
 
   if (query.designation) {
     andConditions.push({
       designation: query.designation
-    })
-  }
-
-  if (query.bloodGroup) {
-    andConditions.push({
-      bloodGroup: query.bloodGroup
-    })
-  }
-
-  if (query.employmentType) {
-    andConditions.push({
-      employmentType: query.eploymentType
-    })
-  }
-
-
-  if (query.gender) {
-    andConditions.push({
-      gender: query.gender
-    })
-  }
-
-  if (query.religin) {
-    andConditions.push({
-      religion: query.religion
     })
   }
 
@@ -159,8 +122,7 @@ const getAllTeacher = async (query: IQuery, siteConfigId: string) => {
     })
   }
 
-
-  const teachers = await prisma.teacher.findMany({
+  const staff = await prisma.staff.findMany({
     where: {
       AND: andConditions
     },
@@ -172,7 +134,7 @@ const getAllTeacher = async (query: IQuery, siteConfigId: string) => {
     },
   })
 
-  const total = await prisma.teacher.count({
+  const total = await prisma.staff.count({
     where: {
       AND: andConditions,
     },
@@ -186,15 +148,14 @@ const getAllTeacher = async (query: IQuery, siteConfigId: string) => {
   };
 
   return {
-    teachers,
+    staff,
     meta,
   };
 }
 
 
-//& GET ALL TEACHERS (PUBLIC)
-const getTeachers = async (query: IQuery, siteConfigId: string) => {
-
+//& GET ALL STAFFS (PUBLIC)
+const getStaffs = async (query: IQuery, siteConfigId: string) => {
   const sort = query.sortBy ? query.sortBy : "createdAt";
   const order = query.sortOrder ? query.sortOrder : "desc";
   const page = Number(query.page || 1);
@@ -210,25 +171,14 @@ const getTeachers = async (query: IQuery, siteConfigId: string) => {
     throw new AppError(httpStatus.NOT_FOUND, 'site config not found')
   }
 
-  const andConditions: TeacherWhereInput[] = [
+  const andConditions: StaffWhereInput[] = [
     {
       siteConfigId
     },
     {
       status: "ACTIVE"
     },
-    {
-      user: {
-        status: "ACTIVE"
-      }
-    },
-    {
-      user: {
-        isDeleted: false
-      }
-    }
   ];
-
 
   if (query.search) {
     andConditions.push({
@@ -240,20 +190,18 @@ const getTeachers = async (query: IQuery, siteConfigId: string) => {
           }
         },
         {
-          highestDegree: {
+          email: {
+            contains: query.search,
+            mode: "insensitive"
+          }
+        },
+        {
+          staff_id: {
             contains: query.search,
             mode: "insensitive"
           }
         }
-
       ]
-    })
-  }
-
-
-  if (query.department) {
-    andConditions.push({
-      department: query.department
     })
   }
 
@@ -263,27 +211,7 @@ const getTeachers = async (query: IQuery, siteConfigId: string) => {
     })
   }
 
-  if (query.employmentType) {
-    andConditions.push({
-      employmentType: query.eploymentType
-    })
-  }
-
-
-  if (query.gender) {
-    andConditions.push({
-      gender: query.gender
-    })
-  }
-
-  if (query.religin) {
-    andConditions.push({
-      religion: query.religion
-    })
-  }
-
-
-  const teachers = await prisma.teacher.findMany({
+  const staff = await prisma.staff.findMany({
     where: {
       AND: andConditions
     },
@@ -294,16 +222,14 @@ const getTeachers = async (query: IQuery, siteConfigId: string) => {
       [sort]: order
     },
     omit: {
-      bankAccount: true,
-      bankName: true,
       phone: true,
-      salary: true,
       siteConfigId: true,
-      userId: true
+      userId: true,
+      nationalId: true
     }
   })
 
-  const total = await prisma.teacher.count({
+  const total = await prisma.staff.count({
     where: {
       AND: andConditions,
     },
@@ -317,14 +243,14 @@ const getTeachers = async (query: IQuery, siteConfigId: string) => {
   };
 
   return {
-    teachers,
+    staff,
     meta,
   };
 }
 
 
-//& GET SINGLE TEACHER (PUBLIC)
-const getSingleTeacher = async (id: string, siteConfigId: string) => {
+//& GET SINGLE STAFF
+const getSingleStaff = async (id: string, siteConfigId: string) => {
   const isConfig = await prisma.siteConfig.findUnique({
     where: {
       id: siteConfigId
@@ -335,31 +261,24 @@ const getSingleTeacher = async (id: string, siteConfigId: string) => {
     throw new AppError(httpStatus.NOT_FOUND, 'site config not found')
   }
 
-  const teacher = await prisma.teacher.findUnique({
+  const staff = await prisma.staff.findUnique({
     where: {
       id,
-      user: {
-        status: 'ACTIVE',
-        isDeleted: false
-      },
       status: "ACTIVE"
     },
     omit: {
-      bankAccount: true,
-      bankName: true,
       phone: true,
-      salary: true,
       siteConfigId: true,
-      userId: true
+      userId: true,
+      nationalId: true
     }
   })
-  return teacher
+  return staff
 }
 
 
-//& UPDATE TEACHER (ADMIN)
-const updatedTeacher = async (payload: IUpdateTeacherPayload, id: string, siteConfigId: string) => {
-
+//& UPDATE STAFF (ADMIN)
+const updatedStaff = async (payload: IUpdateStaffPayload, id: string, siteConfigId: string) => {
   const isConfig = await prisma.siteConfig.findUnique({
     where: {
       id: siteConfigId
@@ -370,26 +289,17 @@ const updatedTeacher = async (payload: IUpdateTeacherPayload, id: string, siteCo
     throw new AppError(httpStatus.NOT_FOUND, 'site config not found')
   }
 
-  const teacher = await prisma.teacher.findUnique({
+  const staff = await prisma.staff.findUnique({
     where: {
       id
     }
   })
 
-  if (!teacher) {
-    throw new AppError(httpStatus.NOT_FOUND, 'techer not found')
+  if (!staff) {
+    throw new AppError(httpStatus.NOT_FOUND, 'staff not found')
   }
 
-  // if (teacher.status === 'DELETED') {
-  //   throw new AppError(httpStatus.BAD_REQUEST, 'teacher is soft deleted. you can not update')
-  // }
-
-  // if (teacher.status === 'BLOCKED') {
-  //   throw new AppError(httpStatus.BAD_REQUEST, 'teacher temporary blocked')
-  // }
-
-
-  const udpateTeacher = await prisma.teacher.update({
+  const updateStaff = await prisma.staff.update({
     where: {
       id
     },
@@ -398,12 +308,12 @@ const updatedTeacher = async (payload: IUpdateTeacherPayload, id: string, siteCo
     }
   })
 
-  return udpateTeacher
+  return updateStaff
 }
 
 
-//& DELETE TEACHER (ADMIN)
-const deleteTeacher = async (id: string, siteConfigId: string) => {
+//& DELETE STAFF (ADMIN)
+const deleteStaff = async (id: string, siteConfigId: string) => {
 
   const transection = await prisma.$transaction(
     async (tx) => {
@@ -417,32 +327,35 @@ const deleteTeacher = async (id: string, siteConfigId: string) => {
         throw new AppError(httpStatus.NOT_FOUND, 'site config not found')
       }
 
-      const teacher = await tx.teacher.findUnique({
+      const staff = await tx.staff.findUnique({
         where: {
           id
         },
-        select: {
-          userId: true
+        include: {
+          user: true
         }
       })
 
-      if (!teacher) {
-        throw new AppError(httpStatus.NOT_FOUND, 'techer not found')
+      if (!staff) {
+        throw new AppError(httpStatus.NOT_FOUND, 'staff not found')
+      }
+
+      if (staff.user.isDeleted) {
+        throw new AppError(httpStatus.BAD_REQUEST, 'staff already deleted')
       }
 
       await tx.user.update({
         where: {
-          id: teacher.userId
+          id: staff.userId
         },
         data: {
-          isDeleted: true,
-          status: "DELETED"
+          isDeleted: true
         }
       })
 
-      await tx.teacher.update({
+      await tx.staff.update({
         where: {
-          id
+          id,
         },
         data: {
           status: "DELETED"
@@ -451,17 +364,16 @@ const deleteTeacher = async (id: string, siteConfigId: string) => {
     },
     {
       maxWait: 10000,
-      timeout: 14000
+      timeout: 15000
     }
   )
 }
 
-
-export const teacherService = {
-  createTeacher,
-  getAllTeacher,
-  getTeachers,
-  getSingleTeacher,
-  deleteTeacher,
-  updatedTeacher
+export const staffService = {
+  createStaff,
+  getAllStaff,
+  getStaffs,
+  getSingleStaff,
+  deleteStaff,
+  updatedStaff
 }

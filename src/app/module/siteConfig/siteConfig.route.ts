@@ -16,7 +16,7 @@ route.post('/',
   siteConfigController.createSiteConfig)
 
 
-route.get('/all-siteConfig',
+route.get('/all',
   auth(Role.SUPER_ADMIN),
   siteConfigController.getAllSiteConfig
 )

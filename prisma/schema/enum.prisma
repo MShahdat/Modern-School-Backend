@@ -34,6 +34,7 @@ enum Group {
   SCIENCE
   COMMERCE
   ARTS
+  NONE
 }
 
 enum EmploymentType {
@@ -58,6 +59,7 @@ enum StaffDesignation {
 }
 
 enum CommitteeDesignation {
+  OWNER
   CHAIRMAN
   MAMBER
 }
