@@ -1,0 +1,17 @@
+model Study {
+  id String @id @default(uuid())
+
+  title       String
+  description String?
+  isActive    Boolean   @default(true)
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  siteConfig   SiteConfig @relation(fields: [siteConfigId], references: [id])
+  siteConfigId String
+
+  @@map("study")
+}

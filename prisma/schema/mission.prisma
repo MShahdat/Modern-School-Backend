@@ -1,0 +1,13 @@
+model MissionVision {
+  id Int @id @default(autoincrement())
+
+  mission String
+  vision  String
+
+  createdAt DateTime @default(now())
+
+  siteConfig   SiteConfig @relation(fields: [siteConfigId], references: [id])
+  siteConfigId String
+
+  @@map("missionVisions")
+}

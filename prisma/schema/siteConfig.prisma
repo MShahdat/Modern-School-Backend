@@ -22,11 +22,26 @@ model SiteConfig {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user       User[]
-  teacher    Teacher[]
-  student    Student[]
-  staffs     Staff[]
-  committees Committee[]
+  user               User[]
+  teacher            Teacher[]
+  student            Student[]
+  staffs             Staff[]
+  committees         Committee[]
+  events             Event[]
+  notice             Notice[]
+  news               News[]
+  calendar           Calendar[]
+  achievement        Achievement[]
+  missionVision      MissionVision[]
+  routine            Routine[]
+  academicRules      AcademicRules[]
+  study              Study[]
+  apply              Apply[]
+  admissionTest      AdmissionTest[]
+  registrationSystem RegistrationSystem[]
+  activity           Activity[]
+  examSchedule       ExamSchedule[]
+  uniform            Uniform[]
 
   @@map("siteConfigs")
 }

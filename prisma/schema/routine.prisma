@@ -1,0 +1,17 @@
+model Routine {
+  id String @id @default(uuid())
+
+  title        String
+  description  String?
+  file         String
+  filePublicId String?
+  isActive     Boolean @default(true)
+
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+
+  siteConfig   SiteConfig @relation(fields: [siteConfigId], references: [id])
+  siteConfigId String
+
+  @@map("routine")
+}

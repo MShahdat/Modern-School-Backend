@@ -1,0 +1,22 @@
+model Achievement {
+  id String @id @default(uuid())
+
+  title         String
+  description   String
+  cover         String?
+  coverPublicId String?
+  isActive      Boolean @default(true)
+
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+
+  createdAt DateTime @default(now())
+  udpatedAt DateTime @updatedAt
+
+  siteConfigId String
+  siteConfig   SiteConfig @relation(fields: [siteConfigId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  gallery Gallery[]
+
+  @@map("achievements")
+}
