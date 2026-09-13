@@ -11,6 +11,8 @@ import { committeeRouter } from "./app/module/committee/committee.route"
 import { siteConfigRouter } from "./app/module/siteConfig/siteConfig.route"
 import { auth } from "./app/middleware/checkAuth"
 import { Role } from "../generated/prisma/enums"
+import { eventRouter } from "./app/module/event/event.route"
+import { noticeRouter } from "./app/module/notice/notice.route"
 
 const app: Application = express()
 
@@ -49,6 +51,9 @@ app.use('/api/v1/:siteConfigId/staff', staffRouter)
 
 app.use('/api/v1/:siteConfigId/committee', committeeRouter)
 
+app.use('/api/v1/event', eventRouter)
+
+app.use('/api/v1/notice', noticeRouter)
 
 
 app.use(globalErrorHandler)
