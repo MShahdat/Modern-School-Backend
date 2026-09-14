@@ -2,6 +2,8 @@ import app from "./app"
 import config from "./app/config/env"
 
 import { prisma } from "./app/lib/prisma"
+import { seedSiteConfig } from "./app/utils/seed"
+import { seedSuperAdmin, seedTesterAdmin } from "./app/utils/seed"
 
 const PORT = config.port
 
@@ -12,6 +14,9 @@ const main = async () => {
     app.listen(PORT, () => {
       console.log(`server is running port ${PORT}`)
     })
+    await seedSiteConfig()
+    await seedSuperAdmin()
+    await seedTesterAdmin()
   } catch (error) {
     console.error('Error statring the server', error)
     await prisma.$disconnect()

@@ -1,0 +1,19 @@
+model Notice {
+  id String @id @default(uuid())
+
+  title        String
+  content      String
+  file         String?
+  filePublicId String?
+  isActive     Boolean   @default(true)
+  isDeleted    Boolean   @default(false)
+  deletedAt    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  siteConfigId String
+  siteConfig   SiteConfig @relation(fields: [siteConfigId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("notices")
+}

@@ -1,0 +1,17 @@
+model Calendar {
+  id String @id @default(uuid())
+
+  title         String
+  description   String?
+  file          String
+  filePublicId  String?
+  publishedDate DateTime  @default(now())
+  isActive      Boolean   @default(true)
+  isDeleted     Boolean   @default(false)
+  deletedAt     DateTime?
+
+  siteConfig   SiteConfig @relation(fields: [siteConfigId], references: [id])
+  siteConfigId String
+
+  @@map("calendar")
+}
