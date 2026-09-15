@@ -17,6 +17,10 @@ import { activityRouter } from "./app/module/activity/activity.route"
 import { adminssionInfoRouter } from "./app/module/admissionInfo/admission.route"
 import { applyRouter } from "./app/module/apply/apply.route"
 import { academicRuleRouter } from "./app/module/rules/rules.route"
+import { calendarRouter } from "./app/module/calendar/calendar.route"
+import { missionRouter } from "./app/module/mission/mission.route"
+import { registrationRouter } from "./app/module/registration/registration.route"
+import { studyRouter } from "./app/module/study/study.route"
 
 const app: Application = express()
 
@@ -59,13 +63,23 @@ app.use('/api/v1/event', eventRouter)
 
 app.use('/api/v1/notice', noticeRouter)
 
-app.use('api/v1/activity', activityRouter)
+app.use('/api/v1/activity', activityRouter)
 
-app.use('api/v1/admissionInfo', adminssionInfoRouter)
+app.use('/api/v1/admissionInfo', adminssionInfoRouter)
 
 app.use('/api/v1/apply', applyRouter)
 
-app.use('api/v1/rule', academicRuleRouter)
+app.use('/api/v1/rule', academicRuleRouter)
+
+app.use('/api/v1/calendar', calendarRouter)
+
+app.use('/api/v1/mission-vission', missionRouter)
+
+app.use('/api/v1/registration', registrationRouter)
+
+app.use('/api/v1/study', studyRouter)
+
+
 
 
 app.use(globalErrorHandler)
