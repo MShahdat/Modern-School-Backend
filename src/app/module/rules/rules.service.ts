@@ -38,8 +38,7 @@ const getAllRules = async (query: IQuery) => {
   const page = Number(query.page || 1);
   const limit = Number(query.limit || 20);
 
-  const andConditions: AcademicRulesWhereInput[] = [
-  ];
+  const andConditions: AcademicRulesWhereInput[] = [];
 
   if (query.search) {
     andConditions.push({
@@ -103,7 +102,8 @@ const getRule = async (id: string) => {
 
   const isRules = await prisma.academicRules.findUnique({
     where: {
-      id: id
+      id,
+      isActive: true
     }
   })
 

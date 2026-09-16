@@ -16,7 +16,7 @@ const createInfo = catchAsync(
     sendResponse(res, {
       statusCode: httpStatus.CREATED,
       success: true,
-      message: "info created successfully",
+      message: "adminssion info created successfully",
       data: result
     })
   }
@@ -47,8 +47,10 @@ const getInof = catchAsync(
   async (req: Request, res: Response) => {
 
     const infoId = req.params.admissionInfoId as string
+    const configId = req.params.siteConfigId as string
 
-    const result = await adimissionService.getInfo(infoId)
+
+    const result = await adimissionService.getInfo(infoId, configId)
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -72,7 +74,7 @@ const updateInfo = catchAsync(
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: "inof updated successfully",
+      message: "info updated successfully",
       data: result
     })
   }

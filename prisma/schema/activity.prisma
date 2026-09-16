@@ -3,9 +3,10 @@ model Activity {
 
   title       String
   description String?
-  isActive    Boolean   @default(true)
-  isDeleted   Boolean   @default(false)
-  deletedAt   DateTime?
+
+  isActive  Boolean   @default(true)
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

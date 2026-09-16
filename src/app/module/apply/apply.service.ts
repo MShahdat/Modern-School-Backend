@@ -38,8 +38,7 @@ const getAll = async (query: IQuery) => {
   const page = Number(query.page || 1);
   const limit = Number(query.limit || 20);
 
-  const andConditions: ApplyWhereInput[] = [
-  ];
+  const andConditions: ApplyWhereInput[] = [];
 
   if (query.search) {
     andConditions.push({
@@ -63,6 +62,12 @@ const getAll = async (query: IQuery) => {
   if (query.isDeleted) {
     andConditions.push({
       isDeleted: query.isDeleted
+    })
+  }
+
+  if (query.configId) {
+    andConditions.push({
+      siteConfigId: query.configId
     })
   }
 
@@ -103,12 +108,12 @@ const getApply = async (id: string) => {
 
   const isApply = await prisma.apply.findUnique({
     where: {
-      id: id
+      id
     }
   })
 
   if (!isApply) {
-    throw new AppError(httpStatus.NOT_FOUND, ' not found')
+    throw new AppError(httpStatus.NOT_FOUND, 'not found')
   }
 
   return isApply
@@ -125,7 +130,7 @@ const updateApply = async (payload: IUpdateApplyPayload, id: string) => {
   })
 
   if (!isApply) {
-    throw new AppError(httpStatus.NOT_FOUND, ' not found')
+    throw new AppError(httpStatus.NOT_FOUND, 'Not found')
   }
 
   if (!isApply.isActive) {
@@ -161,9 +166,8 @@ const deleteApply = async (id: string) => {
   })
 
   if (!isApply) {
-    throw new AppError(httpStatus.NOT_FOUND, ' not found')
+    throw new AppError(httpStatus.NOT_FOUND, 'Not found')
   }
-
 
   if (!isApply.isActive) {
     throw new AppError(httpStatus.CONFLICT, 'apply is temporary deactive')

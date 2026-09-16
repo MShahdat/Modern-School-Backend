@@ -48,11 +48,7 @@ const getAllActivity = async (query: IQuery, siteConfigId: string) => {
     throw new AppError(httpStatus.NOT_FOUND, 'site config not found')
   }
 
-  const andConditions: ActivityWhereInput[] = [
-    {
-      siteConfigId
-    }
-  ];
+  const andConditions: ActivityWhereInput[] = [];
 
   if (query.search) {
     andConditions.push({
@@ -76,6 +72,13 @@ const getAllActivity = async (query: IQuery, siteConfigId: string) => {
   if (query.isDeleted) {
     andConditions.push({
       isDeleted: query.isDeleted
+    })
+  }
+
+
+  if (query.siteConfig) {
+    andConditions.push({
+      siteConfigId: query.siteConfig
     })
   }
 
@@ -186,7 +189,7 @@ const getActvities = async (query: IQuery, siteConfigId: string) => {
 }
 
 
-//& UPDATE SINLGE ACTIVITY
+//& UPDATE ACTIVITY
 const updateActivity = async (payload: IUpdateActivityPayload, activityId: string) => {
 
   const isActivity = await prisma.activity.findUnique({

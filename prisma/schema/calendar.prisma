@@ -6,7 +6,8 @@ model Calendar {
   file          String
   filePublicId  String?
   publishedDate DateTime @default(now())
-  isActive      Boolean  @default(true)
+
+  isActive Boolean @default(true)
 
   isDeleted Boolean   @default(false)
   deletedAt DateTime?

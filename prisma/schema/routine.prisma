@@ -5,7 +5,8 @@ model Routine {
   description  String?
   file         String
   filePublicId String?
-  isActive     Boolean @default(true)
+
+  isActive Boolean @default(true)
 
   isDeleted Boolean   @default(false)
   deletedAt DateTime?

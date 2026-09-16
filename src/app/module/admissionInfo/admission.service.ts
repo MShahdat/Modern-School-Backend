@@ -38,8 +38,7 @@ const getAllInfo = async (query: IQuery) => {
   const page = Number(query.page || 1);
   const limit = Number(query.limit || 20);
 
-  const andConditions: AdmissionTestWhereInput[] = [
-  ];
+  const andConditions: AdmissionTestWhereInput[] = [];
 
   if (query.search) {
     andConditions.push({
@@ -99,17 +98,30 @@ const getAllInfo = async (query: IQuery) => {
 
 
 //& GET SINGLE INFO (PUBLIC)
-const getInfo = async (id: string) => {
+const getInfo = async (id: string, configId: string) => {
+
+  const isConfig = await prisma.siteConfig.findUnique({
+    where: {
+      id: configId
+    }
+  })
+
+  if (!isConfig) {
+    throw new AppError(httpStatus.NOT_FOUND, 'site config not found')
+  }
 
   const isInfo = await prisma.admissionTest.findUnique({
     where: {
-      id: id
+      id,
+      siteConfigId: configId
     }
   })
 
   if (!isInfo) {
     throw new AppError(httpStatus.NOT_FOUND, ' not found')
   }
+
+
 
   return isInfo
 }
