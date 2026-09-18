@@ -2,7 +2,8 @@ import { Router } from "express";
 import { auth } from "../../middleware/checkAuth";
 import { Role } from "../../../../generated/prisma/enums";
 import { Cloudinary } from "../../lib/cloudinary";
-import { routineController } from "./routine.controller";
+import { uniformController } from "./uniform.controller";
+
 
 
 const route = Router()
@@ -11,34 +12,36 @@ route.post(
   '/',
   auth(Role.ADMIN, Role.SUPER_ADMIN),
   Cloudinary.upload.single('file'),
-  routineController.createRoutine
+  uniformController.createUniform
 )
 
 route.get(
-  '/all-routine',
+  '/all',
   auth(Role.ADMIN, Role.SUPER_ADMIN),
-  routineController.getAllRoutine
+  uniformController.getAllUniforms
 )
 
+
 route.get(
-  "/:routineId",
-  routineController.getSingle
+  '/all-uniroms',
+  uniformController.getUniforms
 )
+
 
 route.put(
-  '/:routineId',
+  '/:uniformId',
   Cloudinary.upload.single('file'),
   auth(Role.ADMIN, Role.SUPER_ADMIN),
-  routineController.updateRoutine
+  uniformController.updateUniform
 )
 
 
 route.patch(
-  '/:routineId',
+  '/:uniformId',
   auth(Role.ADMIN, Role.SUPER_ADMIN),
-  routineController.deleteRoutine
+  uniformController.deleteUniform
 )
 
 
 
-export const routineRouter = route
+export const uniformRouter = route

@@ -21,6 +21,9 @@ import { calendarRouter } from "./app/module/calendar/calendar.route"
 import { missionRouter } from "./app/module/mission/mission.route"
 import { registrationRouter } from "./app/module/registration/registration.route"
 import { studyRouter } from "./app/module/study/study.route"
+import { routineRouter } from "./app/module/routine/routine.route"
+import { achievementRouter } from "./app/module/achievement/achievement.route"
+import { uniformRouter } from "./app/module/uniform/uniform.route"
 
 const app: Application = express()
 
@@ -79,8 +82,11 @@ app.use('/api/v1/registration', registrationRouter)
 
 app.use('/api/v1/study', studyRouter)
 
+app.use('/api/v1/routine', routineRouter)
 
+app.use('/api/v1/achievement', achievementRouter)
 
+app.use('/api/v1/uniform', uniformRouter)
 
 
 app.use(globalErrorHandler)

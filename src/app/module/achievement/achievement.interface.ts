@@ -5,3 +5,9 @@ export interface IAchievementPayload {
 }
 
 
+export interface IUpdateAchievementPayload {
+  title?: string
+  description?: string
+}
+
+
