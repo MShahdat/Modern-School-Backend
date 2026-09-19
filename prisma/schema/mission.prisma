@@ -1,0 +1,19 @@
+model MissionVision {
+  id String @id @default(uuid())
+
+  mission String
+  vision  String
+
+  isActive Boolean @default(true)
+
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  siteConfig   SiteConfig @relation(fields: [siteConfigId], references: [id])
+  siteConfigId String
+
+  @@map("missionVisions")
+}
