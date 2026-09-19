@@ -3,7 +3,7 @@ import { catchAsync } from "../../utils/catchAsync";
 import { AppError } from "../../utils/AppError";
 import httpStatus from 'http-status'
 import { siteConfigService } from "./siteConfig.service";
-import { successResponse } from "../../utils/sendResponse";
+import { sendResponse, successResponse } from "../../utils/sendResponse";
 import { siteConfigZodSchema, siteConfigZodSchemaUpdate } from "./siteConfig.validation";
 
 
@@ -31,8 +31,14 @@ const createSiteConfig = catchAsync(
       );
     }
 
-    const resutl = await siteConfigService.createSiteConfig(data, logo)
-    return successResponse(res, httpStatus.CREATED, 'site config created successfully', resutl)
+    const result = await siteConfigService.createSiteConfig(data, logo)
+
+    return sendResponse(res, {
+      statusCode: httpStatus.CREATED,
+      success: true,
+      message: 'Site Config created successfully',
+      data: result
+    })
   }
 )
 
@@ -106,9 +112,14 @@ const udpateSiteConfig = catchAsync(
 
     const id = req.params.siteConfigId as string
 
-    const resutl = await siteConfigService.udpateSiteConfig(data, id, logo!)
+    const result = await siteConfigService.udpateSiteConfig(data, id, logo!)
 
-    return successResponse(res, httpStatus.OK, 'site config updated successfully', resutl)
+    return sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'site config updated successfully',
+      data: result
+    })
   }
 )
 export const siteConfigController = {

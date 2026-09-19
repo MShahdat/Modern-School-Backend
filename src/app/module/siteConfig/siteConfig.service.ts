@@ -15,8 +15,8 @@ const createSiteConfig = async (payload: ISiteConfigPayload, logo: Express.Multe
       Cloudinary.cloudinary.uploader
         .upload_stream(
           {
-            folder: "Modern-School/siteConfig/logo",
-            resource_type: "image",
+            folder: "Modern-School/SiteConfig/logo",
+            resource_type: "auto",
           },
           async (error, result) => {
             if (error) {
@@ -159,12 +159,22 @@ const deleteConfig = async (id: string) => {
     throw new AppError(httpStatus.NOT_FOUND, 'site config not found')
   }
 
-  const delConfig = await prisma.siteConfig.delete({
-    where: { id }
-  })
+  await prisma.$transaction(
+    async (tx) => {
+      await tx.siteConfig.delete({
+        where: { id }
+      })
 
-  await Cloudinary.cloudinary.uploader.destroy(config.logoPublicId as string)
+      if (config.logoPublicId) {
+        await Cloudinary.cloudinary.uploader.destroy(config.logoPublicId as string)
+      }
 
+    },
+    {
+      maxWait: 10000,
+      timeout: 15000
+    }
+  )
 }
 
 
@@ -187,7 +197,7 @@ const udpateSiteConfig = async (payload: ISiteConfigPayload, id: string, logo: E
         .upload_stream(
           {
             folder: "Modern-School/siteConfig/logo",
-            resource_type: "image",
+            resource_type: "auto",
           },
           async (error, result) => {
             if (error) {

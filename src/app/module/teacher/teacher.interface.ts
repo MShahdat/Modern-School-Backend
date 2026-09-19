@@ -24,8 +24,8 @@ export interface ITeacherPayload {
   endingDate?: string
   employmentType: EmploymentType
   salary?: number
-  department: Group
-  subject: Subject[]
+  department?: Group
+  subject?: Subject[]
   highestDegree?: string // "M.Sc", "Ph.D"
   specialization?: string
   experienceYears?: number

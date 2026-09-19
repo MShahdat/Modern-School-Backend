@@ -6,7 +6,7 @@ import { noticeController } from "./notice.controller";
 
 
 
-const route = Router()
+const route = Router({ mergeParams: true })
 
 route.post(
   '/',
@@ -27,6 +27,10 @@ route.get(
   noticeController.getNotices
 )
 
+route.get(
+  '/:noticeId',
+  noticeController.getSingleNotice
+)
 
 route.put(
   '/:noticeId',

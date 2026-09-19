@@ -140,10 +140,6 @@ const updatedInfo = async (payload: IUpdateAdimissionPayload, id: string) => {
     throw new AppError(httpStatus.NOT_FOUND, ' not found')
   }
 
-  if (!isInfo.isActive) {
-    throw new AppError(httpStatus.CONFLICT, 'info is temporary deactived')
-  }
-
   if (isInfo.isDeleted) {
     throw new AppError(httpStatus.CONFLICT, 'info is deleted')
   }
@@ -174,11 +170,6 @@ const deletedInfo = async (id: string) => {
 
   if (!isInfo) {
     throw new AppError(httpStatus.NOT_FOUND, ' not found')
-  }
-
-
-  if (!isInfo.isActive) {
-    throw new AppError(httpStatus.CONFLICT, 'info is temporary deactive')
   }
 
   if (isInfo.isDeleted) {

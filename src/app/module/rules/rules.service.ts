@@ -103,7 +103,8 @@ const getRule = async (id: string) => {
   const isRules = await prisma.academicRules.findUnique({
     where: {
       id,
-      isActive: true
+      isActive: true,
+      isDeleted: false
     }
   })
 
@@ -128,9 +129,6 @@ const updateRule = async (payload: IUpdatePayload, id: string) => {
     throw new AppError(httpStatus.NOT_FOUND, ' not found')
   }
 
-  if (!isRules.isActive) {
-    throw new AppError(httpStatus.CONFLICT, 'rules is temporary deactived')
-  }
 
   if (isRules.isDeleted) {
     throw new AppError(httpStatus.CONFLICT, 'rules is deleted')
@@ -164,10 +162,6 @@ const deleteRule = async (id: string) => {
     throw new AppError(httpStatus.NOT_FOUND, ' not found')
   }
 
-
-  if (!isRule.isActive) {
-    throw new AppError(httpStatus.CONFLICT, 'rule is temporary deactive')
-  }
 
   if (isRule.isDeleted) {
     throw new AppError(httpStatus.CONFLICT, 'rule already deleted')

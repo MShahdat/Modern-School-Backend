@@ -6,7 +6,7 @@ import { calendarController } from "./calendar.controller";
 
 
 
-const route = Router()
+const route = Router({ mergeParams: true })
 
 route.post(
   '/',
@@ -21,7 +21,10 @@ route.get(
   calendarController.getAllCalendar
 )
 
-
+route.get(
+  '/:calendarId',
+  calendarController.getCalendar
+)
 
 route.put(
   '/:calendarId',

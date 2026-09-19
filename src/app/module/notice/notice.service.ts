@@ -143,6 +143,9 @@ const getNotices = async (query: IQuery, configId: string) => {
     },
     {
       siteConfigId: isConfig.id
+    },
+    {
+      isDeleted: false
     }
   ]
 
@@ -194,22 +197,14 @@ const getNotices = async (query: IQuery, configId: string) => {
 
 
 //& GET SINLGE NOTICE
-const getSingleNotice = async (noticeId: string, configId: string
+const getSingleNotice = async (noticeId: string
 ) => {
-
-  const isConfig = await prisma.siteConfig.findUnique({
-    where: {
-      id: configId
-    }
-  })
-
-  if (!isConfig) {
-    throw new AppError(httpStatus.NOT_FOUND, 'site config not found')
-  }
 
   const isNotice = await prisma.notice.findUnique({
     where: {
-      id: noticeId
+      id: noticeId,
+      isActive: true,
+      isDeleted: false
     }
   })
 
@@ -228,7 +223,7 @@ const updateNotice = async (payload: IUpdateNotice, file: Express.Multer.File, n
 
   const isNotice = await prisma.notice.findUnique({
     where: {
-      id: noticeId
+      id: noticeId,
     }
   })
 
@@ -236,30 +231,45 @@ const updateNotice = async (payload: IUpdateNotice, file: Express.Multer.File, n
     throw new AppError(httpStatus.NOT_FOUND, 'notice not found')
   }
 
+  if (!isNotice.isActive) {
+    throw new AppError(httpStatus.BAD_GATEWAY, 'temporary deactive')
+  }
+
+  if (isNotice.deletedAt) {
+    throw new AppError(httpStatus.BAD_GATEWAY, 'already deleted')
+  }
+
   const fileRes = file ?
     await createFile(file, 'Modern-School/Notice')
     : null
 
-  const notice = await prisma.notice.update({
-    where: {
-      id: isNotice.id
+  const transactionRes = await prisma.$transaction(
+    async (tx) => {
+      const notice = await tx.notice.update({
+        where: {
+          id: isNotice.id
+        },
+        data: {
+          ...payload,
+          file: fileRes?.secure_url,
+          filePublicId: fileRes?.public_id
+        }
+      })
+
+      // if (isNotice.filePublicId) {
+      //   Cloudinary.cloudinary.uploader.destroy(isNotice.filePublicId!, {
+      //     invalidate: true,
+      //   })
+      // }
+
+      return notice
     },
-    data: {
-      ...payload,
-      file: fileRes?.secure_url,
-      filePublicId: fileRes?.public_id
+    {
+      timeout: 15000,
+      maxWait: 10000
     }
-  })
-
-
-  // if (file) {
-  //   Cloudinary.cloudinary.uploader.destroy(isNotice.filePublicId, {
-  //     invalidate: true,
-  //   })
-  // }
-
-  return notice
-
+  )
+  return transactionRes
 }
 
 

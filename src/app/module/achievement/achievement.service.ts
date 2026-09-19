@@ -35,14 +35,17 @@ const createAchievement = async (payload: IAchievementPayload, cover: Express.Mu
         data: {
           ...payload,
           siteConfigId: configId,
-          coverImage: coverRes?.secure_url,
-          coverImagePublicId: coverRes?.public_id,
+          cover: coverRes?.secure_url,
+          coverPublicId: coverRes?.public_id,
           gallery: {
             create: additionalFilesRes?.map(f => ({
               file: f.secure_url,
               filePublicId: f.public_id
             }))
           }
+        },
+        include: {
+          gallery: true
         }
       })
       return create
@@ -255,10 +258,6 @@ const deleteAchieve = async (achieveId: string) => {
   }
 
 
-  if (!isAchieve.isActive) {
-    throw new AppError(httpStatus.CONFLICT, 'achievement is temporary deactive')
-  }
-
   if (isAchieve.isDeleted) {
     throw new AppError(httpStatus.CONFLICT, 'achieve already deleted')
   }
@@ -291,11 +290,6 @@ const updateAchieve = async (payload: IUpdateAchievementPayload, cover: Express.
     throw new AppError(httpStatus.NOT_FOUND, 'not found')
   }
 
-
-  if (!isAchieve.isActive) {
-    throw new AppError(httpStatus.CONFLICT, 'achievement is temporary deactive')
-  }
-
   if (isAchieve.isDeleted) {
     throw new AppError(httpStatus.CONFLICT, 'achieve already deleted')
   }
@@ -316,8 +310,8 @@ const updateAchieve = async (payload: IUpdateAchievementPayload, cover: Express.
         },
         data: {
           ...payload,
-          coverImage: coverRes?.secure_url,
-          coverImagePublicId: coverRes?.public_id,
+          cover: coverRes?.secure_url,
+          coverPublicId: coverRes?.public_id,
           gallery: {
             create: additionalFilesRes?.map(f => ({
               file: f.secure_url,

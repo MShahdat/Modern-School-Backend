@@ -6,7 +6,8 @@ import { achievementController } from "./achievement.controller";
 
 
 
-const route = Router()
+const route = Router({ mergeParams: true })
+
 
 route.post(
   '/',

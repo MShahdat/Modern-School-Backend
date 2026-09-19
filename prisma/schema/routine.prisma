@@ -11,6 +11,9 @@ model Routine {
   isDeleted Boolean   @default(false)
   deletedAt DateTime?
 
+  createdAt DateTime @default(now())
+  udpatedAt DateTime @updatedAt
+
   siteConfig   SiteConfig @relation(fields: [siteConfigId], references: [id])
   siteConfigId String
 

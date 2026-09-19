@@ -25,7 +25,6 @@ const createRoutine = catchAsync(
     }
 
     const configId = req.params.siteConfigId as string
-    data = req.body.data
 
     const result = await routineService.createRoutine(data, file!, configId)
 
@@ -71,13 +70,13 @@ const getSingle = catchAsync(
     const routineId = req.params.routineId as string
 
 
-    await routineService.getSingleRoutine(routineId, configId)
+    const result = await routineService.getSingleRoutine(routineId, configId)
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: 'routine retrive successfully',
-      data: null
+      data: result
     })
   }
 )

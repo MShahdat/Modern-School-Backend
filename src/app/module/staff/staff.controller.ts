@@ -9,11 +9,17 @@ import { AppError } from "../../utils/AppError";
 //& CREATE STAFF
 const createStaff = catchAsync(
   async (req: Request, res: Response) => {
-    const body = req.body
-    const user = req.user!
-    const { siteConfigId } = req.params
 
-    const result = await staffService.createStaff(body, siteConfigId as string, user)
+    if (!req.body.data) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'form data not found')
+    }
+
+    const siteConfigId = req.params.siteConfigId as string
+
+    const profile = req.file
+    const data = JSON.parse(req.body.data)
+
+    const result = await staffService.createStaff(data, profile!, siteConfigId)
 
     sendResponse(res, {
       statusCode: httpStatus.OK,

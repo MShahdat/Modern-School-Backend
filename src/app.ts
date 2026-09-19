@@ -24,6 +24,7 @@ import { studyRouter } from "./app/module/study/study.route"
 import { routineRouter } from "./app/module/routine/routine.route"
 import { achievementRouter } from "./app/module/achievement/achievement.route"
 import { uniformRouter } from "./app/module/uniform/uniform.route"
+import { newsRouter } from "./app/module/news/news.route"
 
 const app: Application = express()
 
@@ -52,9 +53,7 @@ app.get('/', async (req: Request, res: Response) => {
 
 app.use('/api/v1/:siteConfigId/auth', AuthRoutes)
 
-app.use('/api/v1/site-config',
-  auth(Role.SUPER_ADMIN),
-  siteConfigRouter)
+app.use('/api/v1/site-config', siteConfigRouter)
 
 app.use('/api/v1/:siteConfigId/teacher', teacherRouter)
 
@@ -62,31 +61,33 @@ app.use('/api/v1/:siteConfigId/staff', staffRouter)
 
 app.use('/api/v1/:siteConfigId/committee', committeeRouter)
 
-app.use('/api/v1/event', eventRouter)
+app.use('/api/v1/:siteConfigId/event', eventRouter)
 
-app.use('/api/v1/notice', noticeRouter)
+app.use('/api/v1/:siteConfigId/notice', noticeRouter)
 
-app.use('/api/v1/activity', activityRouter)
+app.use('/api/v1/:siteConfigId/activity', activityRouter)
 
-app.use('/api/v1/admissionInfo', adminssionInfoRouter)
+app.use('/api/v1/:siteConfigId/admissionInfo', adminssionInfoRouter)
 
-app.use('/api/v1/apply', applyRouter)
+app.use('/api/v1/:siteConfigId/apply', applyRouter)
 
-app.use('/api/v1/rule', academicRuleRouter)
+app.use('/api/v1/:siteConfigId/rule', academicRuleRouter)
 
-app.use('/api/v1/calendar', calendarRouter)
+app.use('/api/v1/:siteConfigId/calendar', calendarRouter)
 
-app.use('/api/v1/mission-vission', missionRouter)
+app.use('/api/v1/:siteConfigId/mission-vission', missionRouter)
 
-app.use('/api/v1/registration', registrationRouter)
+app.use('/api/v1/:siteConfigId/registration', registrationRouter)
 
-app.use('/api/v1/study', studyRouter)
+app.use('/api/v1/:siteConfigId/study', studyRouter)
 
-app.use('/api/v1/routine', routineRouter)
+app.use('/api/v1/:siteConfigId/routine', routineRouter)
 
-app.use('/api/v1/achievement', achievementRouter)
+app.use('/api/v1/:siteConfigId/achievement', achievementRouter)
 
-app.use('/api/v1/uniform', uniformRouter)
+app.use('/api/v1/:siteConfigId/uniform', uniformRouter)
+
+app.use('/api/v1/:siteConfigId/news', newsRouter)
 
 
 app.use(globalErrorHandler)

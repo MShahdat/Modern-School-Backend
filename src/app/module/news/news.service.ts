@@ -257,11 +257,11 @@ const updateNews = async (payload: IUpdateNewsPayload, file: Express.Multer.File
   })
 
 
-  // if (file) {
-  //   Cloudinary.cloudinary.uploader.destroy(isNotice.filePublicId, {
-  //     invalidate: true,
-  //   })
-  // }
+  if (file) {
+    Cloudinary.cloudinary.uploader.destroy(isNews.filePublicId!, {
+      invalidate: true,
+    })
+  }
 
   return news
 

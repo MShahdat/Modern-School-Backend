@@ -19,14 +19,14 @@ const createApply = async (payload: IApplyPayload, configId: string) => {
     throw new AppError(httpStatus.NOT_FOUND, 'site config not found')
   }
 
-  const info = prisma.academicRules.create({
+  const apply = prisma.apply.create({
     data: {
       ...payload,
       siteConfigId: configId
     }
   })
 
-  return info
+  return apply
 }
 
 
@@ -108,7 +108,9 @@ const getApply = async (id: string) => {
 
   const isApply = await prisma.apply.findUnique({
     where: {
-      id
+      id,
+      isActive: true,
+      isDeleted: false
     }
   })
 
@@ -131,10 +133,6 @@ const updateApply = async (payload: IUpdateApplyPayload, id: string) => {
 
   if (!isApply) {
     throw new AppError(httpStatus.NOT_FOUND, 'Not found')
-  }
-
-  if (!isApply.isActive) {
-    throw new AppError(httpStatus.CONFLICT, 'apply is temporary deactived')
   }
 
   if (isApply.isDeleted) {
@@ -167,10 +165,6 @@ const deleteApply = async (id: string) => {
 
   if (!isApply) {
     throw new AppError(httpStatus.NOT_FOUND, 'Not found')
-  }
-
-  if (!isApply.isActive) {
-    throw new AppError(httpStatus.CONFLICT, 'apply is temporary deactive')
   }
 
   if (isApply.isDeleted) {

@@ -1,9 +1,10 @@
 import { EventWhereInput } from "../../../../generated/prisma/models"
 import { IQuery } from "../../interface"
+import { Cloudinary } from "../../lib/cloudinary"
 import { prisma } from "../../lib/prisma"
 import { AppError } from "../../utils/AppError"
 import { createFile, createFiles } from "../../utils/cloudinary"
-import { IEventPayload } from "./event.interface"
+import { IEventPayload, IUpdateEventPayload } from "./event.interface"
 import httpStatus from 'http-status'
 
 
@@ -22,7 +23,7 @@ const createEvent = async (payload: IEventPayload, cover: Express.Multer.File, f
   const transactionRes = await prisma.$transaction(
     async (tx) => {
       const coverRes = cover ?
-        await createFile(cover, 'Modern-School/Event/Cover', "image")
+        await createFile(cover, 'Modern-School/Event/Cover')
         : null
 
       const additionalFilesRes = files ?
@@ -41,14 +42,20 @@ const createEvent = async (payload: IEventPayload, cover: Express.Multer.File, f
               filePublicId: f.public_id
             }))
           }
+        },
+        include: {
+          gallery: true
         }
       })
+      return create
     },
     {
       maxWait: 10000,
       timeout: 15000
     }
   )
+
+  return transactionRes
 
 }
 
@@ -228,7 +235,12 @@ const getSingleEvent = async (eventId: string
 
   const isEvent = await prisma.event.findUnique({
     where: {
-      id: eventId
+      id: eventId,
+      isActive: true,
+      isDeleted: false
+    },
+    include: {
+      gallery: true
     }
   })
 
@@ -237,6 +249,68 @@ const getSingleEvent = async (eventId: string
   }
 
   return isEvent
+}
+
+
+//& UPDATE EVENT
+const updateEvent = async (payload: IUpdateEventPayload, cover: Express.Multer.File, files: Express.Multer.File[], eventId: string) => {
+
+  const isEvent = await prisma.event.findUnique({
+    where: {
+      id: eventId
+    }
+  })
+
+  if (!isEvent) {
+    throw new AppError(httpStatus.NOT_FOUND, 'event not found')
+  }
+
+  const transactionRes = await prisma.$transaction(
+    async (tx) => {
+      const coverRes = cover ?
+        await createFile(cover, 'Modern-School/Event/Cover')
+        : null
+
+      const additionalFilesRes = files ?
+        await createFiles(files, 'Modern-School/Gallery')
+        : null
+
+      const update = await tx.event.update({
+        where: {
+          id: eventId
+        },
+        data: {
+          ...payload,
+          coverImage: coverRes?.secure_url,
+          coverImagePublicId: coverRes?.public_id,
+          gallery: {
+            create: additionalFilesRes?.map(f => ({
+              file: f.secure_url,
+              filePublicId: f.public_id
+            }))
+          }
+        },
+        include: {
+          gallery: true
+        }
+      })
+
+      if (cover) {
+        await Cloudinary.cloudinary.uploader.destroy(isEvent.coverImage!, {
+          invalidate: true
+        })
+      }
+
+      return update
+    },
+    {
+      maxWait: 10000,
+      timeout: 15000
+    }
+  )
+
+  return transactionRes
+
 }
 
 
@@ -283,5 +357,6 @@ export const eventService = {
   getAllEvent,
   getEvents,
   getSingleEvent,
-  deleteEvent
+  deleteEvent,
+  updateEvent
 }

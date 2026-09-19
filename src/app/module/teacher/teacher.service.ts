@@ -7,9 +7,10 @@ import httpStatus from 'http-status'
 import config from "../../config/env"
 import { IQuery } from "../../interface"
 import { TeacherWhereInput } from "../../../../generated/prisma/models"
+import { createFile } from "../../utils/cloudinary"
 
 //& CREATE TEACHER
-const createTeacher = async (payload: ITeacherPayload, siteConfigId: string, user: IRequestUser) => {
+const createTeacher = async (payload: ITeacherPayload, profile: Express.Multer.File, siteConfigId: string) => {
 
   const isConfig = await prisma.siteConfig.findUnique({
     where: {
@@ -21,20 +22,14 @@ const createTeacher = async (payload: ITeacherPayload, siteConfigId: string, use
     throw new AppError(httpStatus.NOT_FOUND, 'Site config not found')
   }
 
-  const isAdmin = await prisma.user.findUnique({
-    where: {
-      id: user.userId
-    }
-  })
-
-  if (!isAdmin) {
-    throw new AppError(httpStatus.NOT_FOUND, 'admin not found')
-  }
 
   const randomPass = Math.random().toString(36).slice(-8)
   console.log('pass', randomPass)
 
   const hasPass = await bcrypt.hash(randomPass, Number(config.bcrypt_salt_rounds))
+
+  console.log('ok')
+  const profileRes = profile ? await createFile(profile, 'Modern-School/Profile') : null
 
   const createUser = await prisma.user.create({
     data: {
@@ -44,6 +39,8 @@ const createTeacher = async (payload: ITeacherPayload, siteConfigId: string, use
       password: hasPass,
       role: "TEACHER",
       needPasswordChange: true,
+      profileImage: profileRes ? profileRes.secure_url : null,
+      imagePublicId: profileRes ? profileRes.public_id : null,
       teacher: {
         create: {
           siteConfigId,
@@ -327,7 +324,8 @@ const getTeachers = async (query: IQuery, siteConfigId: string) => {
 const getSingleTeacher = async (id: string, siteConfigId: string) => {
   const isConfig = await prisma.siteConfig.findUnique({
     where: {
-      id: siteConfigId
+      id: siteConfigId,
+
     }
   })
 

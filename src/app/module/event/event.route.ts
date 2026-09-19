@@ -6,7 +6,7 @@ import { Cloudinary } from "../../lib/cloudinary";
 
 
 
-const route = Router()
+const route = Router({ mergeParams: true })
 
 route.post(
   '/',
@@ -35,6 +35,27 @@ route.get(
 route.get(
   '/all-events',
   eventController.getEvents
+)
+
+route.get(
+  '/:eventId',
+  eventController.singleEvent
+)
+
+route.put(
+  '/:eventId',
+  Cloudinary.upload.fields([
+    {
+      name: "cover",
+      maxCount: 1
+    },
+    {
+      name: "additionalFiles",
+      maxCount: 10
+    }
+  ]),
+  auth(Role.ADMIN, Role.SUPER_ADMIN),
+  eventController.updateEvent
 )
 
 

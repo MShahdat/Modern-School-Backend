@@ -6,7 +6,7 @@ export interface ISiteConfigPayload {
   address: string
   eiin: string
   estdYear: string
-  theme: {}
+  theme?: {}
 
   facebookUrl?: string
   youtubeUrl?: string

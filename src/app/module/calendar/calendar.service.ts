@@ -5,6 +5,7 @@ import { AppError } from "../../utils/AppError";
 import { createFile } from "../../utils/cloudinary";
 import httpStatus from 'http-status'
 import { ICalendarPayload, IUpdateCalendarPayload } from "./calendar.interface";
+import { Cloudinary } from "../../lib/cloudinary";
 
 //& CREATE
 const createCalendar = async (payload: ICalendarPayload, file: Express.Multer.File, configId: string) => {
@@ -134,7 +135,9 @@ const getCalendar = async (calendarId: string, configId: string
 
   const isCalendar = await prisma.calendar.findUnique({
     where: {
-      id: calendarId
+      id: calendarId,
+      isActive: true,
+      isDeleted: false
     }
   })
 
@@ -177,11 +180,11 @@ const updateCalendar = async (payload: IUpdateCalendarPayload, file: Express.Mul
   })
 
 
-  // if (file) {
-  //   Cloudinary.cloudinary.uploader.destroy(isNotice.filePublicId, {
-  //     invalidate: true,
-  //   })
-  // }
+  if (file) {
+    Cloudinary.cloudinary.uploader.destroy(isCalendar.filePublicId!, {
+      invalidate: true,
+    })
+  }
 
   return calendar
 
@@ -202,16 +205,11 @@ const deleteCalendar = async (calendarId: string) => {
     throw new AppError(httpStatus.NOT_FOUND, 'calendar not found')
   }
 
-
-  if (!isCalendar.isActive) {
-    throw new AppError(httpStatus.CONFLICT, 'Calendar is temporary deactive')
-  }
-
   if (isCalendar.isDeleted) {
     throw new AppError(httpStatus.CONFLICT, 'Calendar already deleted')
   }
 
-  await prisma.notice.update({
+  await prisma.calendar.update({
     where: {
       id: isCalendar.id
     },

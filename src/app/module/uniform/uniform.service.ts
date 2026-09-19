@@ -213,13 +213,17 @@ const updateUniform = async (payload: IUpdateUniform, file: Express.Multer.File,
     throw new AppError(httpStatus.NOT_FOUND, 'not found')
   }
 
+  if (isUniform.isDeleted) {
+    throw new AppError(httpStatus.CONFLICT, 'uniform already deleted')
+  }
+
   const fileRes = file ?
     await createFile(file, 'Modern-School/Uniform')
     : null
 
   const transactionRes = await prisma.$transaction(
     async (tx) => {
-      const uniforms = await prisma.uniform.update({
+      const uniforms = await tx.uniform.update({
         where: {
           id: isUniform.id
         },
@@ -237,6 +241,7 @@ const updateUniform = async (payload: IUpdateUniform, file: Express.Multer.File,
       return uniforms
     }
   )
+  return transactionRes
 
 }
 
@@ -265,10 +270,6 @@ const deleteUniform = async (uniformId: string, configId: string) => {
     throw new AppError(httpStatus.NOT_FOUND, 'not found')
   }
 
-
-  if (!isUniform.isActive) {
-    throw new AppError(httpStatus.CONFLICT, 'temporary deactive')
-  }
 
   if (isUniform.isDeleted) {
     throw new AppError(httpStatus.CONFLICT, 'already deleted')

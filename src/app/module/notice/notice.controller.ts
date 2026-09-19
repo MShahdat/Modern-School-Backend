@@ -11,6 +11,9 @@ const createNotice = catchAsync(
   async (req: Request, res: Response) => {
 
     const file = req.file
+    if (!file) {
+      throw new AppError(httpStatus.BAD_REQUEST, "file not found");
+    }
 
     if (!req.body.data) {
       throw new AppError(httpStatus.BAD_REQUEST, "form data not found");
@@ -25,7 +28,6 @@ const createNotice = catchAsync(
     }
 
     const configId = req.params.siteConfigId as string
-    data = req.body.data
 
     const result = await noticeService.createNotice(data, file!, configId)
 
@@ -70,7 +72,7 @@ const getNotices = catchAsync(
     const configId = req.params.siteConfigId as string
     const query = req.query
 
-    const { notices, meta } = await noticeService.getAllNotices(query, configId)
+    const { notices, meta } = await noticeService.getNotices(query, configId)
 
     if (notices.length === 0) {
       throw new AppError(httpStatus.NOT_FOUND, 'notices not found')
@@ -86,6 +88,22 @@ const getNotices = catchAsync(
   }
 )
 
+
+//& SINGLE NOTICE
+const getSingleNotice = catchAsync(
+  async (req: Request, res: Response) => {
+
+    const noticeId = req.params.noticeId as string
+
+    const result = await noticeService.getSingleNotice(noticeId)
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'notice retrive successfully',
+      data: result
+    })
+  }
+)
 
 //& DELETE NOTICE (PUBLIC)
 const deleteNotices = catchAsync(
@@ -112,8 +130,12 @@ const updateNotice = catchAsync(
   async (req: Request, res: Response) => {
 
     const file = req.file
-    const data = req.body.data
+    let data = JSON.parse(req.body.data)
     const noticeId = req.params.noticeId as string
+
+    if (!file && !data) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'must be added one filed')
+    }
 
 
     const result = await noticeService.updateNotice(data, file!, noticeId)
@@ -133,5 +155,5 @@ export const noticeController = {
   getNotices,
   deleteNotices,
   updateNotice,
-
+  getSingleNotice
 }

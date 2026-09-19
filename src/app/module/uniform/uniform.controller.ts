@@ -25,7 +25,6 @@ const createUniform = catchAsync(
     }
 
     const configId = req.params.siteConfigId as string
-    data = req.body.data
 
     const result = await uniformService.createUniform(data, file!, configId)
 
@@ -114,6 +113,10 @@ const updateUniform = catchAsync(
     const file = req.file
     const data = req.body.data
     const uniformId = req.params.uniformId as string
+
+    if (!file && !data) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'must be one field')
+    }
 
 
     const result = await uniformService.updateUniform(data, file!, uniformId)

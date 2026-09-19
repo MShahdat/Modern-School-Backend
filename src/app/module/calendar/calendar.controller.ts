@@ -26,7 +26,6 @@ const createCalendar = catchAsync(
     }
 
     const configId = req.params.siteConfigId as string
-    data = req.body.data
 
     const result = await CalendarService.createCalendar(data, file!, configId)
 
@@ -69,20 +68,15 @@ const getCalendar = catchAsync(
   async (req: Request, res: Response) => {
 
     const configId = req.params.siteConfigId as string
-    const query = req.query
+    const calendarId = req.params.calendarId as string
 
-    const { calendars, meta } = await CalendarService.getAllCalendar(query, configId)
-
-    if (calendars.length === 0) {
-      throw new AppError(httpStatus.NOT_FOUND, 'calendars not found')
-    }
+    const result = await CalendarService.getCalendar(calendarId, configId)
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: 'calendar retrive successfully',
-      data: calendars,
-      meta
+      data: result,
     })
   }
 )
@@ -111,9 +105,12 @@ const updateCalendar = catchAsync(
   async (req: Request, res: Response) => {
 
     const file = req.file
-    const data = req.body.data
+    const data = JSON.parse(req.body.data)
     const calendarId = req.params.calendarId as string
 
+    if (!file && !data) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'must be one field')
+    }
 
     const result = await CalendarService.updateCalendar(data, file!, calendarId)
     sendResponse(res, {

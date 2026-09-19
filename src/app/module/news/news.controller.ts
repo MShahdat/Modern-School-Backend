@@ -25,7 +25,6 @@ const createNews = catchAsync(
     }
 
     const configId = req.params.siteConfigId as string
-    data = req.body.data
 
     const result = await newsService.createNews(data, file!, configId)
 
@@ -133,9 +132,12 @@ const updateNews = catchAsync(
   async (req: Request, res: Response) => {
 
     const file = req.file
-    const data = req.body.data
+    const data = JSON.parse(req.body.data)
     const newsId = req.params.newsId as string
 
+    if (!file && !data) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'must be one field')
+    }
 
     const result = await newsService.updateNews(data, file!, newsId)
     sendResponse(res, {

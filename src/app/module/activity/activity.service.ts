@@ -202,10 +202,6 @@ const updateActivity = async (payload: IUpdateActivityPayload, activityId: strin
     throw new AppError(httpStatus.NOT_FOUND, 'activity not found')
   }
 
-  if (!isActivity.isActive) {
-    throw new AppError(httpStatus.CONFLICT, 'Acitivity is temporary deactived')
-  }
-
   if (isActivity.isDeleted) {
     throw new AppError(httpStatus.CONFLICT, 'Activity is deleted')
   }
@@ -238,10 +234,6 @@ const deleteActivity = async (activityId: string) => {
     throw new AppError(httpStatus.NOT_FOUND, 'Activity not found')
   }
 
-
-  if (!isActivity.isActive) {
-    throw new AppError(httpStatus.CONFLICT, 'Acitivity is temporary deactive')
-  }
 
   if (isActivity.isDeleted) {
     throw new AppError(httpStatus.CONFLICT, 'activity already deleted')

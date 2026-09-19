@@ -93,6 +93,60 @@ const getEvents = catchAsync(
 )
 
 
+//& GET EVENT (PUBLIC)
+const singleEvent = catchAsync(
+  async (req: Request, res: Response) => {
+
+    const eventId = req.params.eventId as string
+
+    const result = await eventService.getSingleEvent(eventId)
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'event retrive successfully',
+      data: result
+    })
+  }
+)
+
+
+//& UDATE EVENT
+const updateEvent = catchAsync(
+  async (req: Request, res: Response) => {
+
+    const eventId = req.params.eventId as string
+
+    const files = req.files as
+      | { [fieldname: string]: Express.Multer.File[] }
+      | undefined;
+
+    const cover = files?.["cover"]?.[0];
+    const additionalFiles = files?.["additionalFiles"] || [];
+
+    let data = undefined
+
+    if (data) {
+      data = JSON.parse(req.body.data)
+      const validation = eventValidationZodSchema.safeParse(data)
+
+      if (!validation.success) {
+        throw new AppError(httpStatus.BAD_REQUEST, validation.error.issues[0].message)
+      }
+      data = validation.data
+    }
+
+    const result = await eventService.updateEvent(data!, cover!, additionalFiles, eventId)
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'event udpated successfully',
+      data: result
+    })
+  }
+)
+
 //& DELETE EVENT (PUBLIC)
 const deleteEvent = catchAsync(
   async (req: Request, res: Response) => {
@@ -117,5 +171,7 @@ export const eventController = {
   createEvent,
   getAllEvents,
   getEvents,
-  deleteEvent
+  singleEvent,
+  deleteEvent,
+  updateEvent
 }

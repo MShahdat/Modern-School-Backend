@@ -5,7 +5,7 @@ import { Cloudinary } from "../../lib/cloudinary";
 import { newsController } from "./news.controller";
 
 
-const route = Router()
+const route = Router({ mergeParams: true })
 
 route.post(
   '/',
@@ -47,4 +47,4 @@ route.patch(
 
 
 
-export const noticeRouter = route
+export const newsRouter = route

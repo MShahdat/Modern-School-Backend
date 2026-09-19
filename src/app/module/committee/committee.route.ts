@@ -2,12 +2,14 @@ import { Router } from "express";
 import { committeeController } from "./committee.controller";
 import { auth } from "../../middleware/checkAuth";
 import { Role } from "../../../../generated/prisma/enums";
+import { Cloudinary } from "../../lib/cloudinary";
 
 
 const route = Router({ mergeParams: true })
 
 
 route.post('/',
+  Cloudinary.upload.single('profile'),
   auth(Role.SUPER_ADMIN, Role.ADMIN),
   committeeController.createCommittee)
 

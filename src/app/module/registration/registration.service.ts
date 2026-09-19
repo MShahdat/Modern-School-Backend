@@ -103,7 +103,9 @@ const getRegistration = async (id: string) => {
 
   const isRegistration = await prisma.registrationSystem.findUnique({
     where: {
-      id
+      id,
+      isActive: true,
+      isDeleted: false
     }
   })
 
@@ -126,10 +128,6 @@ const updateRegistration = async (payload: IUpdateRegistrationPayload, id: strin
 
   if (!isRegistration) {
     throw new AppError(httpStatus.NOT_FOUND, ' not found')
-  }
-
-  if (!isRegistration.isActive) {
-    throw new AppError(httpStatus.CONFLICT, 'registration is temporary deactived')
   }
 
   if (isRegistration.isDeleted) {
@@ -163,10 +161,6 @@ const deleteRegistration = async (id: string) => {
     throw new AppError(httpStatus.NOT_FOUND, ' not found')
   }
 
-
-  if (!isRegistration.isActive) {
-    throw new AppError(httpStatus.CONFLICT, 'registration is temporary deactive')
-  }
 
   if (isRegistration.isDeleted) {
     throw new AppError(httpStatus.CONFLICT, 'registration already deleted')

@@ -11,6 +11,7 @@ export interface INoticePayload {
 export interface IUpdateNotice {
   title?: string,
   content?: string
+  isActive?: boolean
 }
 
 

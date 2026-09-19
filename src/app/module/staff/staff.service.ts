@@ -7,10 +7,12 @@ import config from "../../config/env"
 import { IQuery } from "../../interface"
 import { StaffWhereInput } from "../../../../generated/prisma/models"
 import { AppError } from "../../utils/AppError"
+import { createFile } from "../../utils/cloudinary"
 
 
 //& CREATE STAFF
-const createStaff = async (payload: IStaffPayload, siteConfigId: string, user: IRequestUser) => {
+const createStaff = async (payload: IStaffPayload, profile: Express.Multer.File, siteConfigId: string,) => {
+
   const isConfig = await prisma.siteConfig.findUnique({
     where: {
       id: siteConfigId
@@ -21,19 +23,12 @@ const createStaff = async (payload: IStaffPayload, siteConfigId: string, user: I
     throw new AppError(httpStatus.NOT_FOUND, 'Site config not found')
   }
 
-  const isAdmin = await prisma.user.findUnique({
-    where: {
-      id: user.userId
-    }
-  })
-
-  if (!isAdmin) {
-    throw new AppError(httpStatus.NOT_FOUND, 'admin not found')
-  }
 
   const randomPass = Math.random().toString(36).slice(-8)
 
   const hasPass = await bcrypt.hash(randomPass, Number(config.bcrypt_salt_rounds))
+
+  const profileRes = profile ? await createFile(profile, 'Modern-School/Profile') : null
 
   const createUser = await prisma.user.create({
     data: {
@@ -43,6 +38,8 @@ const createStaff = async (payload: IStaffPayload, siteConfigId: string, user: I
       password: hasPass,
       role: "STAFF",
       needPasswordChange: true,
+      profileImage: profileRes ? profileRes.secure_url : null,
+      imagePublicId: profileRes ? profileRes.public_id : null,
       staff: {
         create: {
           siteConfigId,
@@ -264,7 +261,11 @@ const getSingleStaff = async (id: string, siteConfigId: string) => {
   const staff = await prisma.staff.findUnique({
     where: {
       id,
-      status: "ACTIVE"
+      status: "ACTIVE",
+      user: {
+        isDeleted: false,
+
+      }
     },
     omit: {
       phone: true,

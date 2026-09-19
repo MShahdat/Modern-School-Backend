@@ -5,7 +5,7 @@ import { Cloudinary } from "../../lib/cloudinary";
 import { routineController } from "./routine.controller";
 
 
-const route = Router()
+const route = Router({ mergeParams: true })
 
 route.post(
   '/',

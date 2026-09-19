@@ -11,3 +11,13 @@ export interface IEventPayload {
   endDate: string
   location: string
 }
+
+
+
+export interface IUpdateEventPayload {
+  title?: string
+  description?: string
+  startDate?: string
+  endDate?: string
+  location?: string
+}

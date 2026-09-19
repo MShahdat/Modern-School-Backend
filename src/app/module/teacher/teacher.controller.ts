@@ -9,16 +9,23 @@ import { AppError } from "../../utils/AppError";
 //& CREATE TEACHER
 const createTeacher = catchAsync(
   async (req: Request, res: Response) => {
-    const body = req.body
-    const user = req.user!
-    const { siteConfigId } = req.params
 
-    const result = await teacherService.createTeacher(body, siteConfigId as string, user)
+    const profile = req.file
+    console.log('profile', profile)
+
+    if (!req.body.data) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'form data not found')
+    }
+
+    const data = JSON.parse(req.body.data)
+    const siteConfigId = req.params.siteConfigId as string
+
+    const result = await teacherService.createTeacher(data, profile!, siteConfigId)
 
     sendResponse(res, {
-      statusCode: httpStatus.OK,
+      statusCode: httpStatus.CREATED,
       success: true,
-      message: 'User logged in successfully',
+      message: 'Teacher created successfully',
       data: result,
     })
   }

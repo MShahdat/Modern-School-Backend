@@ -20,14 +20,16 @@ const createRoutine = async (payload: IRoutinePayload, file: Express.Multer.File
     throw new AppError(httpStatus.NOT_FOUND, 'site config not found')
   }
 
-  const fileRes = file ?
+  if (!file) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'file must be added')
+  }
+  const fileRes =
     await createFile(file, 'Modern-School/Routine')
-    : null
 
   const createRoutine = await prisma.routine.create({
     data: {
       ...payload,
-      file: fileRes?.secure_url,
+      file: fileRes.secure_url,
       filePublicId: fileRes?.public_id,
       siteConfigId: isConfig.id,
     }
@@ -138,7 +140,9 @@ const getSingleRoutine = async (routineId: string, configId: string
 
   const isRoutine = await prisma.routine.findUnique({
     where: {
-      id: routineId
+      id: routineId,
+      isActive: true,
+      isDeleted: false
     }
   })
 
@@ -181,11 +185,11 @@ const updateRoutine = async (payload: IUpdateRoutinePayload, file: Express.Multe
   })
 
 
-  // if (file) {
-  //   Cloudinary.cloudinary.uploader.destroy(isNotice.filePublicId, {
-  //     invalidate: true,
-  //   })
-  // }
+  if (isRoutine.filePublicId) {
+    Cloudinary.cloudinary.uploader.destroy(isRoutine.filePublicId!, {
+      invalidate: true,
+    })
+  }
 
   return routine
 
@@ -215,11 +219,6 @@ const deleteRoutine = async (routineId: string, configId: string) => {
 
   if (!isRoutine) {
     throw new AppError(httpStatus.NOT_FOUND, 'routine not found')
-  }
-
-
-  if (!isRoutine.isActive) {
-    throw new AppError(httpStatus.CONFLICT, 'routine is temporary deactive')
   }
 
   if (isRoutine.isDeleted) {

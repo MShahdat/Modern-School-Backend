@@ -3,17 +3,23 @@ import { catchAsync } from "../../utils/catchAsync";
 import { committeeService } from "./committee.service";
 import { sendResponse } from "../../utils/sendResponse";
 import httpStatus from 'http-status'
-import { AppError } from "../../utils/appError";
+import { AppError } from "../../utils/AppError";
 
 
 //& CREATE COMMITTEE
 const createCommittee = catchAsync(
   async (req: Request, res: Response) => {
-    const body = req.body
-    const user = req.user!
-    const { siteConfigId } = req.params
 
-    const result = await committeeService.createCommittee(body, siteConfigId as string, user)
+    if (!req.body.data) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'form data not found')
+    }
+
+    const profile = req.file
+
+    const siteConfigId = req.params.siteConfigId as string
+    const data = JSON.parse(req.body.data)
+
+    const result = await committeeService.createCommittee(data, profile!, siteConfigId)
 
     sendResponse(res, {
       statusCode: httpStatus.OK,

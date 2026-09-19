@@ -67,7 +67,7 @@ const updateRegistration = catchAsync(
   async (req: Request, res: Response) => {
 
     const body = req.body
-    const registrationId = req.params.applyId as string
+    const registrationId = req.params.registrationId as string
 
     const result = await registrationService.updateRegistration(body, registrationId)
 

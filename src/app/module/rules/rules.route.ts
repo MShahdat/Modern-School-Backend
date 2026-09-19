@@ -4,7 +4,7 @@ import { Role } from "../../../../generated/prisma/enums";
 import { academicRuleController } from "./rules.controller";
 
 
-const route = Router()
+const route = Router({ mergeParams: true })
 
 route.post(
   '/',

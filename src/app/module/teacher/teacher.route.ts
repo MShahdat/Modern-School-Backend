@@ -2,6 +2,7 @@ import { Router } from "express";
 import { teacherController } from "./teacher.controller";
 import { auth } from "../../middleware/checkAuth";
 import { Role } from "../../../../generated/prisma/enums";
+import { Cloudinary } from "../../lib/cloudinary";
 
 
 
@@ -10,6 +11,7 @@ const route = Router({ mergeParams: true })
 
 route.post('/',
   auth(Role.SUPER_ADMIN, Role.ADMIN),
+  Cloudinary.upload.single('profile'),
   teacherController.createTeacher)
 
 route.get(

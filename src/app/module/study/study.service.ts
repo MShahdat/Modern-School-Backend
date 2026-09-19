@@ -103,7 +103,9 @@ const getStudy = async (id: string) => {
 
   const isStudy = await prisma.study.findUnique({
     where: {
-      id
+      id,
+      isActive: true,
+      isDeleted: false
     }
   })
 
@@ -126,10 +128,6 @@ const updateStudy = async (payload: IUpdateStudyPayload, id: string) => {
 
   if (!isStudy) {
     throw new AppError(httpStatus.NOT_FOUND, ' not found')
-  }
-
-  if (!isStudy.isActive) {
-    throw new AppError(httpStatus.CONFLICT, 'study is temporary deactived')
   }
 
   if (isStudy.isDeleted) {
@@ -164,15 +162,11 @@ const deleteStudy = async (id: string) => {
   }
 
 
-  if (!isStudy.isActive) {
-    throw new AppError(httpStatus.CONFLICT, 'study is temporary deactive')
-  }
-
   if (isStudy.isDeleted) {
     throw new AppError(httpStatus.CONFLICT, 'study already deleted')
   }
 
-  await prisma.apply.update({
+  await prisma.study.update({
     where: {
       id
     },
